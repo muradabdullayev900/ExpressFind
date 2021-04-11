@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content%}
+    <div class="content-section">
+        {% for api in apis %}
+            <article class="media content-section">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a class="mr-2" href="{{ api.get('url') }}">{{ api.get('title') }}</a>
+                        <small class="text-muted">{{ api.get('price') }}</small>
+                        <small class="text-muted">{{ api.get('review_count') }}</small>
+                    </div>
+                    <h2><a class="article-title" href="#">{{ api.get('rating') }}</a></h2>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% endblock content %}
+
+
+
+{#{% for data in apis %}#}
+{#            <article class="media content-section">#}
+{#                <div class="media-body">#}
+{#                    <div>#}
+{#                        <h4><a class="article-title">{{ data.get('title') }}</a></h4>#}
+{#                    </div>#}
+{#                    <div>#}
+{#                        <h5 class="float-left font-weight-bold price-title">Price: {{ data.get('price') }}</h5>#}
+{#                        <h5 class="float-right rating-title">Rating: {{ data.get('rating') }}</h5>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </article>#}
+{#        {% else %}#}
+{#            <div>No such item</div>#}
+{#        {% endfor %}#}
