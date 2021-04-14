@@ -2,28 +2,14 @@ from src import app
 from flask import render_template, url_for, flash, redirect
 from src.forms import RegistrationForm, LoginForm
 from src.models import User
-
-# posts = [
-#     {
-#         'author': 'Kamran Karimov',
-#         'title': 'Blog Post 1',
-#         'content': 'First post content',
-#         'date_posted': 'March 29 2021'
-#     },
-#     {
-#         'author': "John Doe",
-#         "title": "Blog Post 2",
-#         "content": "Second post content",
-#         "date_posted": "March 29 2021"
-#     }
-# ]
+from src.amazon_scrape import *
 
 
 @app.route('/')
 @app.route('/home')
 def home():
-    # products_api = main('ultrawide monitor')
-    return render_template('home.html')
+    products_api = main('dell xps')
+    return render_template('home.html', apis=products_api)
 
 
 @app.route('/about')
