@@ -11,10 +11,10 @@ def get_url(search_term):
 def extract_record(item):
     try:
         atag = item.h2.a
-        event_title = atag.text.strip()
+        title = atag.text.strip()
         url = 'https://amazon.com' + atag.get('href')
     except AttributeError:
-        event_title = 'No title provided'
+        title = 'No title provided'
 
     try:
         price_parent = item.find('span', 'a-price')
@@ -28,7 +28,7 @@ def extract_record(item):
         rating = 'no rating'
 
     result = {
-        'event_title': event_title,
+        'title': title,
         'price': price,
         'rating': rating,
         'url': url
