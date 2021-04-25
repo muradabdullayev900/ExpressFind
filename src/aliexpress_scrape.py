@@ -1,11 +1,15 @@
 from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
+from time import sleep
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 
 def get_url(search_term):
-    template = f'https://aliexpress.ru/wholesale?catId=0&initiative_id=SB_20210414233356&SearchText={search_term}'
     search_term = search_term.replace(' ', '+')
+    template = f'https://aliexpress.ru/wholesale?catId=0&initiative_id=SB_20210414233356&SearchText={search_term}'
     return template
 
 
@@ -40,7 +44,7 @@ def extract_record(item):
 
 def aliexpress_scraper(search_item):
     chromeOptions = Options()
-    chromeOptions.headless = True
+    chromeOptions.headless = False
     driver = webdriver.Chrome('D:/Compressed/chromedriver.exe', options=chromeOptions)
 
     records = []
@@ -48,8 +52,12 @@ def aliexpress_scraper(search_item):
     url = get_url(search_item)
 
     driver.get(url)
+    # MAX_WAIT_TIME = 60
+    # wait = WebDriverWait(driver, MAX_WAIT_TIME)
+    # element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div.product-info")))
+    # height = driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     soup = BeautifulSoup(driver.page_source, 'html.parser')
-    results = soup.find_all('div', {'class': 'gallery product-card middle-place'})
+    results = soup.find_all('div', {'class': 'product-card'})
 
     for item in results:
         record = extract_record(item)

@@ -15,6 +15,27 @@
 	{% else %}
 		<title>ExpressFind</title>
 	{% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Create three equal columns that floats next to each other */
+        .column {
+            float: left;
+            width: 33.33%;
+            padding: 10px;
+            height: 300px; /* Should be removed. Only for demonstration */
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
 </head>
 <body>
 	<header class="site-header">
@@ -41,15 +62,15 @@
 	<main role="main" class="container">
 	  <div class="row">
 		<div class="col-md-8">
-            {% with messages = get_flashed_messages(with_categories = true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+{#            {% with messages = get_flashed_messages(with_categories = true) %}#}
+{#                {% if messages %}#}
+{#                    {% for category, message in messages %}#}
+{#                        <div class="alert alert-{{ category }}">#}
+{#                            {{ message }}#}
+{#                        </div>#}
+{#                    {% endfor %}#}
+{#                {% endif %}#}
+{#            {% endwith %}#}
             {% block content %}{% endblock %}
 		</div>
 		<div class="col-md-4">

@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 
 
@@ -33,7 +34,9 @@ def extract_record(item):
 
 
 def tapaz_scraper(search_item):
-    driver = webdriver.Chrome('D:/Compressed/chromedriver.exe')
+    chromeOptions = Options()
+    chromeOptions.headless = True
+    driver = webdriver.Chrome('D:/Compressed/chromedriver.exe', options=chromeOptions)
 
     records = []
 

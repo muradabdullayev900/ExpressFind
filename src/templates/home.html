@@ -1,34 +1,174 @@
-{% extends "layout.html" %}
-{% block content%}
-    <div class="content-section">
-        {% for api in apis %}
-            <article class="media content-section">
-                <div class="media-body">
-                    <div class="article-metadata">
-                        <a class="mr-2" href="{{ api.get('url') }}">{{ api.get('title')}}</a>
-                        <small class="text-muted">{{ api.get('rating') }}</small>
-                    </div>
-                    <h2><a class="article-title" href="{{ api.get('url') }}">{{ api.get('price') }}</a></h2>
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+
+	{% if title %}
+		<title>ExpressFind - {{ title }}</title>
+	{% else %}
+		<title>ExpressFind</title>
+	{% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Create three equal columns that floats next to each other */
+        .column {
+            float: left;
+            width: 33.33%;
+            padding: 10px;
+            height: 300px; /* Should be removed. Only for demonstration */
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+	<header class="site-header">
+	  <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+		<div class="container">
+		  <a class="navbar-brand mr-4" href="/">ExpressFind</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		  </button>
+		  <div class="collapse navbar-collapse" id="navbarToggle">
+			<div class="navbar-nav mr-auto">
+			  <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
+			  <a class="nav-item nav-link" href="{{ url_for('about') }}">About</a>
+			</div>
+			<!-- Navbar Right Side -->
+			<div class="navbar-nav">
+			  <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+			  <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+			</div>
+		  </div>
+		</div>
+	  </nav>
+	</header>
+	<main role="main" class="container">
+	  <div class="row">
+		<div class="col-md-8">
+            {% block content %}
+                <div class="content-section">
+                    <form method="POST" action="/home">
+                        {{ form.hidden_tag() }}
+                        <fieldset class="form-group">
+                            <legend class="border-primary mb-sm-2 text-center">Search Something</legend>
+                            <div class="form-group">
+                                {{ form.item(class="form-control form-control-lg ", placeholder="e.g. iphone 12") }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.min_price(class="form-control form-control-lg ", placeholder="min price") }}
+                                {{ form.max_price(class="form-control form-control-lg ", placeholder="max price") }}
+                            </div>
+                        </fieldset>
+                        <div class="form-group">
+                            {{ form.submit(class="btn btn-outline-info") }}
+                        </div>
+                    </form>
                 </div>
-            </article>
-        {% endfor %}
-    </div>
-{% endblock content %}
+                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" name="amazon">
+                    <label class="btn btn-outline-primary" for="btncheck1">Amazon.com</label>
+
+                    <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off" name="aliexpress">
+                    <label class="btn btn-outline-primary" for="btncheck2">Aliexpress.ru</label>
+
+                    <input type="checkbox" class="btn-check" id="btncheck3" autocomplete="off" name="tapaz">
+                    <label class="btn btn-outline-primary" for="btncheck3">Tap.az</label>
+                </div>
+            {% endblock %}
+		</div>
+		<div class="col-md-4">
+		  <div class="content-section">
+			<h3>Search Engines</h3>
+			<p class='text-muted'>You can fetch the data from these 3 sites.
+			  <ul class="list-group">
+                <a class="list-group-item list-group-item-success" href='https://www.amazon.com/' for=""><li>amazon.com</li></a>
+				<a class="list-group-item list-group-item-success" href="https://www.aliexpress.com/" for=""><li>aliexpress.com</li></a>
+				<a class="list-group-item list-group-item-success" href="https://tap.az/" for=""><li>tap.az</li></a>
+			  </ul>
+			</p>
+		  </div>
+		</div>
+	  </div>
+      <div class="row">
+          <div class="column">
+              <h3 class="text-center">Amazon.com</h3>
+              <div class="content-section">
+                  {% for product in amazon_product %}
+                      <article class="media content-section">
+                          <div class="media-body">
+                              <div class="article-metadata">
+                                  <a class="mr-2" href="{{ product['url'] }}">{{ product['title'] }}<br></a>
+                                  <small class="text-muted">{{ product['rating'] }}</small>
+                              </div>
+                              <h2>
+                                  <a class="article-title" href="{{ product['url'] }}">{{ product['price'] }}</a>
+                              </h2>
+                          </div>
+                      </article>
+                  {% endfor %}
+              </div>
+          </div>
+          <div class="column">
+              <h3 class="text-center">Tap.az</h3>
+              <div class="content-section">
+                  {% for product in tapaz_product %}
+                      <article class="media content-section">
+                          <div class="media-body">
+                              <div class="article-metadata">
+                                  <a class="mr-2" href="{{ product['url'] }}">{{ product['title'] }}<br></a>
+                                  <small class="text-muted">{{ product['rating'] }}</small>
+                              </div>
+                              <h2>
+                                  <a class="article-title" href="{{ product['url'] }}">{{ product['price'] }}</a>
+                              </h2>
+                          </div>
+                      </article>
+                  {% endfor %}
+              </div>
+          </div>
+          <div class="column">
+              <h3 class="text-center">Aliexpress.ru</h3>
+              <div class="content-section">
+                  {% for product in aliexpress_product %}
+                      <article class="media content-section">
+                          <div class="media-body">
+                              <div class="article-metadata">
+                                  <a class="mr-2" href="{{ product['url'] }}">{{ product['title'] }}<br></a>
+                                  <small class="text-muted">{{ product['rating'] }}</small>
+                              </div>
+                              <h2>
+                                  <a class="article-title" href="{{ product['url'] }}">{{ product['price'] }}</a>
+                              </h2>
+                          </div>
+                      </article>
+                  {% endfor %}
+              </div>
+          </div>
+      </div>
+    </main>
 
 
-
-{#{% for data in apis %}#}
-{#            <article class="media content-section">#}
-{#                <div class="media-body">#}
-{#                    <div>#}
-{#                        <h4><a class="article-title">{{ data.get('title') }}</a></h4>#}
-{#                    </div>#}
-{#                    <div>#}
-{#                        <h5 class="float-left font-weight-bold price-title">Price: {{ data.get('price') }}</h5>#}
-{#                        <h5 class="float-right rating-title">Rating: {{ data.get('rating') }}</h5>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </article>#}
-{#        {% else %}#}
-{#            <div>No such item</div>#}
-{#        {% endfor %}#}
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

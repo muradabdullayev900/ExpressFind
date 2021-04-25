@@ -1,15 +1,25 @@
 from src import app
 from flask import render_template, url_for, flash, redirect
-from src.forms import RegistrationForm, LoginForm
-from src.models import User
+from src.forms import *
 from src.amazon_scrape import *
+from src.tapaz_scrape import *
+from src.aliexpress_scrape import *
 
 
 @app.route('/')
-@app.route('/home')
+@app.route('/home', methods=['GET', 'POST'])
 def home():
-    products_api = main('dell xps')
-    return render_template('home.html', apis=products_api)
+    form = SearchForm()
+    item = form.item.data
+    if item:
+        amazon_product = amazon_scraper(item)
+        tapaz_product = tapaz_scraper(item)
+        aliexpress_product = aliexpress_scraper(item)
+    else:
+        amazon_product = {}
+        tapaz_product = {}
+        aliexpress_product = {}
+    return render_template('home.html', title='Search', form=form) # , aliexpress_product=aliexpress_product) # amazon_product=amazon_product, tapaz_product=tapaz_product, )
 
 
 @app.route('/about')
