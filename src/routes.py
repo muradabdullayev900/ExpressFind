@@ -4,7 +4,6 @@ from src.forms import SearchForm
 from src.amazon_filter import *
 from src.tapaz_filter import *
 from src.aliexpress_filter import *
-from src.temp import Threading
 
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'])
