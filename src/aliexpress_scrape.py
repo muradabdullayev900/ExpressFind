@@ -1,72 +1,54 @@
-from bs4 import BeautifulSoup
-from selenium.webdriver.chrome.options import Options
-from selenium import webdriver
-from time import sleep
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
+from src.scrape import Scraper
+import requests
+import json
 
 
-def get_url(search_term):
-    search_term = search_term.replace(' ', '+')
-    template = f'https://aliexpress.ru/wholesale?catId=0&initiative_id=SB_20210414233356&SearchText={search_term}'
-    return template
+class ScrapeAliexpress(Scraper):
+    @staticmethod
+    def get_api(item):
+        url = "https://magic-aliexpress1.p.rapidapi.com/api/products/search"
 
+        querystring = {"name": item,
+                       "page": "1"}  # ,"minSalePrice":"5","shipToCountry":"FR","sort":"NEWEST_DESC","page":"1","maxSalePrice":"1000000","shipFromCountry":"CN","fastDelivery":"true"
 
-def extract_record(item):
-    try:
-        atag = item.a
-        title = item.find('div', {'class': 'item-title-wrap'}).text.strip()
-        url = 'https:' + atag.get('href')
-    except AttributeError:
-        title = 'No title provided'
+        headers = {
+            'x-rapidapi-key': "709a585a71msh9ea746b2aeae379p13ffb0jsn25aff23b5005",
+            'x-rapidapi-host': "magic-aliexpress1.p.rapidapi.com"
+        }
 
-    try:
-        price = item.find('span', {'class': 'price-current'}).text.strip()
-    except AttributeError:
-        price = 'no price'
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        return json.loads(str(response.text))
 
-    try:
-        rating = item.find('span', {'class': 'rating-value'}).text + ' out of 5'
-    except AttributeError:
-        rating = 'no rating'
+    @staticmethod
+    def extract_record(response):
+        records = []
 
-    result = {
-        'title': title,
-        'price': price,
-        'rating': rating,
-        'url': url,
-        'source': 'aliexpress.ru'
-    }
+        for item in response['docs']:
+            title = item['product_title']
+            price = round(item['app_sale_price'], 2)
+            currency = item['app_sale_price_currency']
+            url = item['product_detail_url']
 
-    return result
+            try:
+                rating_val = item['evaluate_rate']
+                rating = str(rating_val) + ' out of 5 stars'
+            except:
+                rating_val = 0
+                rating = 'no rating'
 
+            result = {
+                'title': title,
+                'price': price,
+                'currency': currency,
+                'rating': rating,
+                'url': url
+            }
 
-def aliexpress_scraper(search_item):
-    chromeOptions = Options()
-    chromeOptions.headless = False
-    driver = webdriver.Chrome('D:/Compressed/chromedriver.exe', options=chromeOptions)
+            records.append(result)
 
-    records = []
+        return records
 
-    url = get_url(search_item)
-
-    driver.get(url)
-    # MAX_WAIT_TIME = 60
-    # wait = WebDriverWait(driver, MAX_WAIT_TIME)
-    # element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div.product-info")))
-    # height = driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    soup = BeautifulSoup(driver.page_source, 'html.parser')
-    results = soup.find_all('div', {'class': 'product-card'})
-
-    for item in results:
-        record = extract_record(item)
-        if record:
-            records.append(record)
-
-    driver.quit()
-    return records
-
-
-if __name__ == "__aliexpress_scraper__":
-    aliexpress_scraper()
+    def scrape(self, search_item):
+        api = self.get_api(search_item)
+        product = self.extract_record(api)
+        return product
