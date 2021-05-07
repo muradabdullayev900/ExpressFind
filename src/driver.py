@@ -17,6 +17,3 @@ class Driver:
         self.driver.close()
         self.driver.quit()
 
-
-amazon_driver = Driver(True)
-tapaz_driver = Driver(True)

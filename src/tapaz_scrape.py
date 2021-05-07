@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 from src.scrape import Scraper
-from src.driver import tapaz_driver
+from src.driver import Driver
+
+tapaz_driver = Driver(True)
 
 
 class ScrapeTapaz(Scraper):

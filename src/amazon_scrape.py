@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 from src.scrape import Scraper
-from src.driver import amazon_driver
+from src.driver import Driver
+
+amazon_driver = Driver(True)
 
 
 class ScrapeAmazon(Scraper):
