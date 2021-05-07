@@ -20,7 +20,10 @@ class TapazFilter(Displayer):
         return record
 
     def sorter(self, record, sort):
-        record = sorted(record, key=lambda k: k['price'], reverse=(sort != 'ascending'))
+        if sort == 'ascending':
+            record = sorted(record, key=lambda k: k['price'], reverse=False)
+        elif sort == 'descending':
+            record = sorted(record, key=lambda k: k['price'], reverse=True)
         return record
 
     def Filter(self, record, sort, currency, min_price, max_price):
