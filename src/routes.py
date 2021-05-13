@@ -1,9 +1,13 @@
 from src import app
 from flask import render_template, request
 from src.forms import SearchForm
-from src.amazon_filter import *
-from src.tapaz_filter import *
-from src.aliexpress_filter import *
+from src.amazon_filter import AmazonFilter
+from src.tapaz_filter import TapazFilter
+from src.aliexpress_filter import AliexpressFilter
+
+amazon_filter = AmazonFilter()
+tapaz_filter = TapazFilter()
+aliexpress_filter = AliexpressFilter()
 
 @app.route('/')
 @app.route('/home', methods=['GET', 'POST'])
@@ -21,13 +25,12 @@ def home():
         amazon = request.form.getlist('amazon')
         tapaz = request.form.getlist('tapaz')
         aliexpress = request.form.getlist('aliexpress')
-        # amazon_product, tapaz_product, aliexpress_product = Threading().threading(item, amazon, tapaz, aliexpress)
         if amazon:
-            amazon_product = AmazonFilter().Filter(item, sort, currency, min_price, max_price)
+            amazon_product = amazon_filter.Filter(item, sort, currency, min_price, max_price)
         if tapaz:
-            tapaz_product = TapazFilter().Filter(item, sort, currency, min_price, max_price)
+            tapaz_product = tapaz_filter.Filter(item, sort, currency, min_price, max_price)
         if aliexpress:
-            aliexpress_product = AliexpressFilter().Filter(item, sort, currency, min_price, max_price)
+            aliexpress_product = aliexpress_filter.Filter(item, sort, currency, min_price, max_price)
 
         return render_template('home.html', title='Search', form=form, amazon_product=amazon_product, tapaz_product=tapaz_product, aliexpress_product=aliexpress_product)
     else:

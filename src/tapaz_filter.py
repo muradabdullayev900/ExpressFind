@@ -1,10 +1,11 @@
 from src.displayer import Displayer
 from src.tapaz_scrape import ScrapeTapaz
 
+tapaz_scraper = ScrapeTapaz()
 
 class TapazFilter(Displayer):
     def __init__(self):
-        self.tapaz_scraper = ScrapeTapaz()
+        self.tapaz_scraper = tapaz_scraper
 
     def convert_cur(self, record, currency):
         if currency == 'usd':

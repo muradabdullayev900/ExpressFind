@@ -1,10 +1,11 @@
 from src.displayer import Displayer
 from src.aliexpress_scrape import ScrapeAliexpress
 
+aliexpress_scraper = ScrapeAliexpress()
 
 class AliexpressFilter(Displayer):
     def __init__(self):
-        self.aliexpress_scraper = ScrapeAliexpress()
+        self.aliexpress_scraper = aliexpress_scraper
 
     def convert_cur(self, record, currency):
         if currency == 'azn':
