@@ -1,9 +1,11 @@
 from src.displayer import Displayer
 from src.amazon_scrape import ScrapeAmazon
 
+amazon_scraper = ScrapeAmazon()
+
 class AmazonFilter(Displayer):
     def __init__(self):
-        self.amazon_scraper = ScrapeAmazon()
+        self.amazon_scraper = amazon_scraper
 
     def convert_cur(self, record, currency):
         if currency == 'azn':
